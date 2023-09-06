@@ -6,7 +6,7 @@ export type Card = {
   isUncovered: boolean;
 };
 
-type GameStatus = "won" | "lost" | "playing";
+type GameStatus = "won" | "playing";
 
 export type State = {
   deck: Card[];
@@ -62,3 +62,7 @@ export const state: State = {
   stacks,
   gameStatus,
 };
+
+export function isGameWon() {
+  return foundations.every((foundation) => foundation.length === 13);
+}

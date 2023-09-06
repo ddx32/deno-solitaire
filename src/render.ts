@@ -32,8 +32,6 @@ function renderStacks(stacks: State["stacks"]) {
         continue;
       }
 
-      const visible = i === stack.length - 1;
-
       const card = renderCard(stack[i]);
       row += `[${card}]`;
     }
@@ -67,9 +65,6 @@ function renderDeck(deck: State["deck"]) {
 export function render(state: State) {
   if (state.gameStatus === "won") {
     renderWinScreen();
-    return;
-  } else if (state.gameStatus === "lost") {
-    renderLoseScreen();
     return;
   }
 
