@@ -93,23 +93,29 @@ function toFoundation(promptArguments: string[]) {
 }
 
 function stackToStack(promptArguments: string[]) {
-  if (promptArguments.length !== 3) {
+  if (promptArguments.length > 3 || promptArguments.length < 2) {
     throw new Error("Invalid command");
+  }
+
+  for (const argument of promptArguments) {
+    if (isNaN(parseInt(argument, 10))) {
+      throw new Error("Invalid command");
+    }
   }
 
   const sourceStackIndex = parseInt(promptArguments[0], 10);
-  if (isNaN(sourceStackIndex)) {
-    throw new Error("Invalid command");
-  }
+  let cardIndex: number;
+  let destinationStackIndex: number;
 
-  const cardIndex = parseInt(promptArguments[1], 10);
-  if (isNaN(cardIndex)) {
-    throw new Error("Invalid command");
-  }
-
-  const destinationStackIndex = parseInt(promptArguments[2], 10);
-  if (isNaN(destinationStackIndex)) {
-    throw new Error("Invalid command");
+  if (promptArguments.length === 2) {
+    cardIndex = state.stacks[sourceStackIndex - 1].findIndex(
+      (card) => card.isUncovered
+    );
+    cardIndex += 1;
+    destinationStackIndex = parseInt(promptArguments[1], 10);
+  } else {
+    cardIndex = parseInt(promptArguments[1], 10);
+    destinationStackIndex = parseInt(promptArguments[2], 10);
   }
 
   const cardToMove = state.stacks[sourceStackIndex - 1][cardIndex - 1];
