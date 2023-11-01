@@ -1,5 +1,6 @@
-import { Suit, redSuits, state, values } from "./state.ts";
-import { Card } from "./state.ts";
+import { redSuits, values } from "../lib/deck.ts";
+import { state } from "./state.ts";
+import { getPromptArguments } from "../lib/input.ts";
 
 function advanceDeck() {
   const topCard = state.deck.pop();
@@ -144,8 +145,7 @@ export function parseAction(input: string | null) {
     return;
   }
 
-  const normalized = input.trim().replace(/\s+/g, " ");
-  const promptArguments = normalized.split(" ");
+  const promptArguments = getPromptArguments(input);
 
   try {
     if (promptArguments[0] === "a") {

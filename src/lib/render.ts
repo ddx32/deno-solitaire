@@ -1,14 +1,10 @@
-import { Card, State, redSuits } from "./state.ts";
+import { redSuits } from "./deck.ts";
 
-function renderWinScreen() {
+export function renderWinScreen() {
   console.log("You won!");
 }
 
-function renderLoseScreen() {
-  console.log("You lost!");
-}
-
-function renderCard(card: Card) {
+export function renderCard(card: Card) {
   if (card.isUncovered === false) {
     return "--";
   }
@@ -21,8 +17,14 @@ function renderCard(card: Card) {
   }
 }
 
-function renderStacks(stacks: State["stacks"]) {
-  console.log("-01--02--03--04--05--06--07-");
+export function renderStacks(stacks: Card[][]) {
+  const stackNumbers = stacks.reduce((rowString, _current, index) => {
+    const colNumber = index + 1;
+    const number = colNumber.toString().padStart(2, "0");
+    rowString += `-${number}-`;
+    return rowString;
+  }, "");
+  console.log(stackNumbers);
   const longestStack = Math.max(...stacks.map((stack) => stack.length));
   for (let i = 0; i < longestStack; i++) {
     let row = "";
@@ -40,7 +42,13 @@ function renderStacks(stacks: State["stacks"]) {
   }
 }
 
-function renderFoundations(foundations: State["foundations"]) {
+export function renderDeck(deck: Card[]) {
+  const topCard = deck[deck.length - 1];
+  const card = topCard ? renderCard(topCard) : "  ";
+  console.log(`[${card}]`);
+}
+
+export function renderFoundations(foundations: Card[][]) {
   const highestFoundationValues = foundations.map((foundation) => {
     if (foundation.length === 0) {
       return "  ";
@@ -54,24 +62,4 @@ function renderFoundations(foundations: State["foundations"]) {
     row += `[${value}]`;
   }
   console.log(row);
-}
-
-function renderDeck(deck: State["deck"]) {
-  const topCard = deck[deck.length - 1];
-  const card = topCard ? renderCard(topCard) : "  ";
-  console.log(`[${card}]`);
-}
-
-export function render(state: State) {
-  if (state.gameStatus === "won") {
-    renderWinScreen();
-    return;
-  }
-
-  // Print the board
-  renderStacks(state.stacks);
-  console.log("");
-  renderFoundations(state.foundations);
-  renderDeck(state.deck);
-  console.log("");
 }
