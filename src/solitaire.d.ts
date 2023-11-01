@@ -7,3 +7,9 @@ declare type Card = {
 };
 
 declare type GameType = "klondike | spider";
+
+declare type State = {
+  deck: Card[];
+  foundations: Card[][];
+  stacks: Card[][];
+};

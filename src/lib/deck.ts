@@ -13,6 +13,17 @@ export function shuffleDeck(deck: Card[]): Card[] {
   return shuffledDeck;
 }
 
+export function uncoverCardsBelow(stacks: Card[][]) {
+  const coveredStacks = [...stacks];
+  for (const stack of coveredStacks) {
+    for (let i = 0; i < stack.length - 1; i++) {
+      stack[i].isUncovered = false;
+    }
+  }
+
+  return coveredStacks;
+}
+
 export const values = [
   "a",
   "2",

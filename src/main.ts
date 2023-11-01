@@ -1,8 +1,11 @@
-import { state, isGameWon } from "./klondike/state.ts";
 import drawKlondike from "./klondike/draw.ts";
+import drawSpider from "./spider/draw.ts";
 import { parseAction } from "./klondike/actions.ts";
 import { renderWinScreen } from "./lib/render.ts";
 import { parse } from "https://deno.land/std@0.202.0/flags/mod.ts";
+import { GameState } from "./state.ts";
+import { KlondikeState } from "./klondike/KlondikeState.ts";
+import { SpiderState, SuitVariant } from "./spider/SpiderState.ts";
 
 enum GameType {
   klondike = "klondike",
@@ -28,8 +31,21 @@ const gameType: GameType = Object.entries(flags).reduce(
   GameType.klondike
 );
 
+export let state: GameState;
+
+switch (gameType) {
+  case GameType.klondike:
+    state = new KlondikeState();
+    break;
+  case GameType.spider:
+    state = new SpiderState(SuitVariant.singleSuit);
+    break;
+  default:
+    state = new KlondikeState();
+}
+
 while (true) {
-  if (isGameWon()) {
+  if (state.isGameWon()) {
     renderWinScreen();
     break;
   }
@@ -38,10 +54,11 @@ while (true) {
     drawKlondike(state);
     const input = prompt("solitaire> ");
     parseAction(input);
+    continue;
   }
 
   if (gameType === GameType.spider) {
-    console.log("Spider solitaire is not implemented yet");
+    drawSpider(state);
     break;
   }
 

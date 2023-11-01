@@ -1,5 +1,5 @@
 import { redSuits, values } from "../lib/deck.ts";
-import { state } from "./state.ts";
+import { state } from "../main.ts";
 import { getPromptArguments } from "../lib/input.ts";
 
 function advanceDeck() {
