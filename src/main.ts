@@ -39,7 +39,7 @@ switch (gameType) {
     state = new KlondikeState();
     break;
   case GameType.spider:
-    state = new SpiderState(SuitVariant.doubleSuit);
+    state = new SpiderState(SuitVariant.singleSuit);
     break;
   default:
     state = new KlondikeState();

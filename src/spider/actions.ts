@@ -13,7 +13,8 @@ function dealNewRow() {
 }
 
 function uncoverTopCard(stack: Card[]) {
-  if (!stack[stack.length - 1].isUncovered) {
+  const previousCard = stack[stack.length - 1];
+  if (previousCard && !previousCard.isUncovered) {
     stack[stack.length - 1].isUncovered = true;
   }
 }
@@ -82,6 +83,40 @@ function moveStack(
   uncoverTopCard(sourceStack);
 }
 
+function moveCompletedStacksToFoundations() {
+  for (const stack of state.stacks) {
+    const finishedStack = stack
+      .filter((card) => card.isUncovered)
+      .reduce((runningStack, card) => {
+        if (runningStack.length === 0) {
+          runningStack.push(card);
+          return runningStack;
+        }
+
+        const previousCard = runningStack[runningStack.length - 1];
+        if (
+          previousCard.suit === card.suit &&
+          values.indexOf(previousCard.value) === values.indexOf(card.value) + 1
+        ) {
+          runningStack.push(card);
+        }
+
+        return runningStack;
+      }, [] as Card[]);
+
+    if (finishedStack.length === 13) {
+      const emptyFoundation = state.foundations.find(
+        (foundation) => foundation.length === 0
+      );
+      if (emptyFoundation) {
+        emptyFoundation.push(...finishedStack);
+        const spliceStart = stack.indexOf(finishedStack[0]);
+        stack.splice(spliceStart, finishedStack.length);
+      }
+    }
+  }
+}
+
 export function parseAction(input: string | null) {
   if (!input) {
     return;
@@ -92,10 +127,7 @@ export function parseAction(input: string | null) {
   try {
     if (promptArguments[0] === "deal" && promptArguments.length === 1) {
       dealNewRow();
-      return;
-    }
-
-    if (promptArguments.length === 3) {
+    } else if (promptArguments.length === 3) {
       const [srcStack, srcIndex, destStack] = promptArguments.map(
         (arg) => parseInt(arg, 10) - 1
       );
@@ -108,6 +140,8 @@ export function parseAction(input: string | null) {
 
       moveStack(state.stacks[srcStack], state.stacks[destStack], srcIndex);
     }
+
+    moveCompletedStacksToFoundations();
   } catch (error) {
     console.error(error.message);
     return;
