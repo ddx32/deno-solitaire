@@ -1,9 +1,10 @@
 import drawKlondike from "./klondike/draw.ts";
 import drawSpider from "./spider/draw.ts";
-import { parseAction } from "./klondike/actions.ts";
+import { parseAction as parseKlondikeAction } from "./klondike/actions.ts";
+import { parseAction as parseSpiderAction } from "./spider/actions.ts";
 import { renderWinScreen } from "./lib/render.ts";
 import { parse } from "https://deno.land/std@0.202.0/flags/mod.ts";
-import { GameState } from "./state.ts";
+import { GameState } from "./State.ts";
 import { KlondikeState } from "./klondike/KlondikeState.ts";
 import { SpiderState, SuitVariant } from "./spider/SpiderState.ts";
 
@@ -38,7 +39,7 @@ switch (gameType) {
     state = new KlondikeState();
     break;
   case GameType.spider:
-    state = new SpiderState(SuitVariant.singleSuit);
+    state = new SpiderState(SuitVariant.doubleSuit);
     break;
   default:
     state = new KlondikeState();
@@ -53,13 +54,15 @@ while (true) {
   if (gameType === GameType.klondike) {
     drawKlondike(state);
     const input = prompt("solitaire> ");
-    parseAction(input);
+    parseKlondikeAction(input);
     continue;
   }
 
   if (gameType === GameType.spider) {
     drawSpider(state);
-    break;
+    const input = prompt("solitaire> ");
+    parseSpiderAction(input);
+    continue;
   }
 
   continue;

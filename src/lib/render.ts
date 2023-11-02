@@ -37,7 +37,8 @@ export function renderStacks(stacks: Card[][]) {
       const card = renderCard(stack[i]);
       row += `[${card}]`;
     }
-    row += ` -0${i + 1}-`;
+    const rowNumber = `${i + 1}`.padStart(2, "0");
+    row += ` -${rowNumber}-`;
     console.log(row);
   }
 }
@@ -48,18 +49,30 @@ export function renderDeck(deck: Card[]) {
   console.log(`[${card}]`);
 }
 
-export function renderFoundations(foundations: Card[][]) {
-  const highestFoundationValues = foundations.map((foundation) => {
-    if (foundation.length === 0) {
-      return "  ";
-    }
-
-    const highestCard = foundation[foundation.length - 1];
-    return renderCard(highestCard);
-  });
-  let row = "";
-  for (const value of highestFoundationValues) {
-    row += `[${value}]`;
+function getFoundationString(foundation: Card[]) {
+  let output: string;
+  if (foundation.length === 0) {
+    output = " ";
+  } else {
+    output = renderCard(foundation[foundation.length - 1]);
   }
-  console.log(row);
+
+  return `[${output}]`;
+}
+
+function getFoundationsRow(foundations: Card[][]) {
+  return foundations.reduce((rowString, foundation) => {
+    rowString += getFoundationString(foundation);
+    return rowString;
+  }, "");
+}
+
+export function renderFoundations(foundations: Card[][]) {
+  console.log(getFoundationsRow(foundations));
+}
+
+export function renderSpiderDecks(foundations: Card[][], deck: Card[]) {
+  const foundationsString = getFoundationsRow(foundations);
+  const dealsLeft = deck.length / 10;
+  console.log(`${foundationsString} - ${dealsLeft} deals left`);
 }
